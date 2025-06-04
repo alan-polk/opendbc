@@ -5,6 +5,7 @@ from opendbc.car import ACCELERATION_DUE_TO_GRAVITY, Bus, DT_CTRL, apply_std_ste
 from opendbc.car.ford import fordcan
 from opendbc.car.ford.values import CarControllerParams, FordFlags
 from opendbc.car.interfaces import CarControllerBase, ISO_LATERAL_ACCEL, V_CRUISE_MAX
+from opendbc.car.vehicle_model import VehicleModel
 
 LongCtrlState = structs.CarControl.Actuators.LongControlState
 VisualAlert = structs.CarControl.HUDControl.VisualAlert
@@ -46,6 +47,7 @@ class CarController(CarControllerBase):
     super().__init__(dbc_names, CP)
     self.packer = CANPacker(dbc_names[Bus.pt])
     self.CAN = fordcan.CanBus(CP)
+    self.VM = VehicleModel(CP, disable_roll_and_yaw_compensation=True)
 
     self.apply_curvature_last = 0
     self.accel = 0.0
