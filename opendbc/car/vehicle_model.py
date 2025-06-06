@@ -22,7 +22,7 @@ ACCELERATION_DUE_TO_GRAVITY = 9.8
 
 
 class VehicleModel:
-  def __init__(self, CP: CarParams, disable_roll_and_yaw_compensation: bool = False):
+  def __init__(self, CP: CarParams):
     """
     Args:
       CP: Car Parameters
@@ -39,7 +39,7 @@ class VehicleModel:
     self.cR_orig: float = CP.tireStiffnessRear
     self.update_params(1.0, CP.steerRatio)
 
-    self.disable_roll_and_yaw_compensation = disable_roll_and_yaw_compensation
+    self.disable_roll_compensation = CP.disableRollComp
 
   def update_params(self, stiffness_factor: float, steer_ratio: float) -> None:
     """Update the vehicle model with a new stiffness factor and steer ratio"""
@@ -116,7 +116,7 @@ class VehicleModel:
     Returns:
       Roll compensation curvature [rad]
     """
-    if self.disable_roll_and_yaw_compensation:
+    if self.disable_roll_compensation:
         print("Roll compensation disabled! Roll compensation disabled! Roll compensation disabled!")
         return 0.0
     sf = calc_slip_factor(self)
@@ -138,8 +138,6 @@ class VehicleModel:
     Returns:
       Steering wheel angle [rad]
     """
-    if self.disable_roll_and_yaw_compensation:
-        return 0.0
     curv = yaw_rate / u
     return self.get_steer_from_curvature(curv, u, roll)
 
