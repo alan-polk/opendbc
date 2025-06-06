@@ -117,8 +117,10 @@ class VehicleModel:
       Roll compensation curvature [rad]
     """
     if self.disable_roll_and_yaw_compensation:
+        print("Roll compensation disabled! Roll compensation disabled! Roll compensation disabled!")
         return 0.0
     sf = calc_slip_factor(self)
+    print("Roll comp enabled")
 
     if abs(sf) < 1e-6:
       return 0
