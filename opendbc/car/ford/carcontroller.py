@@ -47,7 +47,6 @@ class CarController(CarControllerBase):
     super().__init__(dbc_names, CP)
     self.packer = CANPacker(dbc_names[Bus.pt])
     self.CAN = fordcan.CanBus(CP)
-    CP.disableRollComp = True
     self.VM = VehicleModel(CP)
 
     self.apply_curvature_last = 0
