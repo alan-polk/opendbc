@@ -242,7 +242,7 @@ static bool ford_tx_hook(const CANPacket_t *msg) {
     unsigned int raw_curvature = (msg->data[0] << 3) | (msg->data[1] >> 5);
     unsigned int raw_curvature_rate = ((msg->data[1] & 0x1FU) << 8) | msg->data[2];
     unsigned int raw_path_angle = (msg->data[3] << 3) | (msg->data[4] >> 5);
-    unsigned int raw_path_offset = (msg->data[5] << 2) | (msg->data[6] >> 6);
+    // unsigned int raw_path_offset = (msg->data[5] << 2) | (msg->data[6] >> 6);
 
     // These signals are not yet tested with the current safety limits
     bool violation = (raw_curvature_rate != FORD_INACTIVE_CURVATURE_RATE) || (raw_path_angle != FORD_INACTIVE_PATH_ANGLE); // || (raw_path_offset != FORD_INACTIVE_PATH_OFFSET);
