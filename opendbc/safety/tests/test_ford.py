@@ -264,6 +264,11 @@ class TestFordSafetyBase(common.PandaCarSafetyTest):
     curvature_rates = np.arange(-0.001024, 0.00102375, 0.001).round(3)
     curvatures = np.arange(-0.02, 0.02094, 0.01).round(2)
 
+    path_offsets_limits = [-1.0, 1.0]
+    path_angles_limits = [-0.25, 0.25]
+    curvature_rates_limits = [-0.001024, 0.00102375]
+    curvatures_limits = [-0.012, 0.012]
+
     for speed in (self.CURVATURE_ERROR_MIN_SPEED - 1,
                   self.CURVATURE_ERROR_MIN_SPEED + 1):
       _, curvature_accel_limit_upper = self.get_canfd_curvature_limits(speed)
@@ -277,10 +282,17 @@ class TestFordSafetyBase(common.PandaCarSafetyTest):
                   self._set_prev_desired_angle(curvature)
                   self._reset_curvature_measurement(curvature, speed)
 
-                  should_tx = path_offset == 0 and path_angle == 0 and curvature_rate == 0
+                  # should_tx = path_offset == 0 and path_angle == 0 and curvature_rate == 0
+                  should_tx = True
+
+                  should_tx = should_tx and curvatures_limits[0] <= curvature <= curvatures_limits[1]
+                  should_tx = should_tx and path_offsets_limits[0] <= path_offset <= path_offsets_limits[1]
+                  should_tx = should_tx and path_angles_limits[0] <= path_angle <= path_angles_limits[1]
+                  should_tx = should_tx and curvature_rates_limits[0] <= curvature_rate <= curvature_rates_limits[1]
+
                   # when request bit is 0, only allow curvature of 0 since the signal range
                   # is not large enough to enforce it tracking measured
-                  should_tx = should_tx and (controls_allowed if steer_control_enabled else curvature == 0)
+                  should_tx = should_tx and (controls_allowed if steer_control_enabled else (curvature == 0 and path_offset == 0 and path_angle == 0 and curvature_rate == 0))
 
                   # Only CAN FD has the max lateral acceleration limit
                   if self.STEER_MESSAGE == MSG_LateralMotionControl2:
